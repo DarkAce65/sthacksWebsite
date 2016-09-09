@@ -3,10 +3,13 @@ import json
 from datetime import datetime
 from pytz import timezone
 from pprint import pprint
+from config import sunsetLatitude, sunsetLongitude
+from memoize import MWT
 
-url = "http://api.sunrise-sunset.org/json?lat=42.340955&lng=-71.090507&date=today"
+url = "http://api.sunrise-sunset.org/json?lat="+sunsetLatitude+"&lng="+sunsetLongitude+"&date=today"
 
 
+@MWT(timeout=60*60)  # timeout = 1 hour
 def getTimeOfSunset():  # returns time of sunset in the form of "11:33:27 PM"
     # hit up the API to get the time
     get = requests.get(url)
@@ -31,7 +34,7 @@ def isSunset():
     return show_time and is_evening and same_hours and is_wednesday
 
 
-def print_obj_info(obj):
+def print_obj_info(obj):  # prints out information about the given object (helper function - never used)
     print('- ' * 10)
     pprint([{item: getattr(obj, item)} for item in dir(obj)])
     print('- ' * 10)
