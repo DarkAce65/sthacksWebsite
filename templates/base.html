@@ -156,95 +156,34 @@
 		</div>
 		<div id="info_location" style="display: none;">{{ info_location }}</div>
 		<script type="text/javascript">
-			var directory = '~';
+			var activeDirectory = "~";
 			var hostname = "something@sthacks";
 			var info_location = document.querySelector("#info_location").innerHTML;
-			var prompt = document.createElement("p");
-			prompt.innerHTML = hostname + ":~ $" + '<span id="status" contenteditable onblur="this.focus();"></span>';
-			document.querySelector('.stdout').appendChild(prompt);
-			document.querySelector('#status').focus();
-			var sq = document.querySelector('span[contenteditable]');
-			sq.addEventListener('keyup',function(e) {
-				var code = e.which; // recommended to use e.which, it's normalized across browsers
-				if(code==13) {
-					e.preventDefault();
-					sq.removeAttribute('contenteditable');
-					var input = this.innerHTML.replace(/<.*?>/g,'');
-					console.log(input);
-					evaluateInput(input);
-				}
-			});
-			function evaluateInput(input) {
-				var stdout = document.querySelector(".stdout");
-				var output = document.createElement("p");
-				var end = input.indexOf(" ") === -1 ? input.length : input.indexOf(" ");
-				switch(input.slice(0, end)) {
-					case "cd":
-						var dir = input.slice(end + 1);
-						if(dir.length > 0) {
-							switch(dir) {
-								case "~":
-								case "/etc/secret":
-								case "/etc/secret/":
-									directory = dir.replace(/\/$/, "");
-									break;
-								default:
-									output.innerHTML = dir + " was not found";
-									stdout.appendChild(output);
-									break;
-							}
-						}
-						else {
-							output.innerHTML = directory;
-							stdout.appendChild(output);
-						}
-						break;
-					case "ls":
-						output.innerHTML = "secret.sh";
-						if(directory === "~") {
-							output.innerHTML = "getInfo.sh";
-						}
-						stdout.appendChild(output);
-						break;
-					case "./getInfo.sh":
-						if(directory === "~") {
-							output.innerHTML = "STATUS: " + info_location;
-							stdout.appendChild(output);
-						}
-						break;
-					case "./secret.sh":
-						if(directory === "/etc/secret") {
-							output.innerHTML = "cowsays moo";
-							stdout.appendChild(output);
-						}
-						break;
-					case "cls":
-						stdout.innerHTML = "";
-						break;
-					default:
-						output.innerHTML = "";
-						if(input.length > 0) {
-							output.innerHTML = "shell: " + input.slice(0, end) + ": not found";
-						}
-						stdout.appendChild(output);
-						break;
-				}
+
+			var commands = {};
+
+			function createPrompt() {
 				var prompt = document.createElement("p");
-				prompt.innerHTML = hostname + ":" + directory + " $<span contenteditable onblur='this.focus();'></span>";
-				stdout.appendChild(prompt);
-				prompt.querySelector('span').focus();
-				var sq = document.querySelector('span[contenteditable]');
-				sq.addEventListener('keyup', function(e) {
+				prompt.innerHTML = hostname + ":" + activeDirectory + " $<span contenteditable onblur='this.focus();'></span>";
+				document.querySelector(".stdout").appendChild(prompt);
+				var span = prompt.querySelector("span");
+				span.focus();
+				span.addEventListener("keyup", function(e) {
 					var code = e.which; // recommended to use e.which, it's normalized across browsers
 					if(code === 13) {
 						e.preventDefault();
-						sq.removeAttribute('contenteditable');
-						var input = this.innerHTML.replace(/<.*?>/g,'');
-						console.log(input);
+						this.removeAttribute("contenteditable");
+						var input = this.innerHTML.replace(/<.*?>/g, "");
 						evaluateInput(input);
 					}
 				});
 			}
+
+			function evaluateInput(input) {
+				var args = input.split(" ");
+				console.log(args);
+			}
+
 			function closet() {
 				document.querySelector('.terminal').innerHTML = 'goodbye;';
 
@@ -271,6 +210,8 @@
 					document.querySelector('.stdout').className += ' expanded';
 				}
 			}
+
+			createPrompt();
 		</script>
 	</body>
 </html>
