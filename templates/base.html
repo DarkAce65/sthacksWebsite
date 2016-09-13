@@ -156,7 +156,7 @@
 		</div>
 		<div id="info_location" style="display: none;">{{ info_location }}</div>
 		<script type="text/javascript">
-			var activeDirectory = "~";
+			var currentDirectory = "~";
 			var hostname = "something@sthacks";
 			var info_location = document.querySelector("#info_location").innerHTML;
 
@@ -172,7 +172,7 @@
 			}
 
 			function printPrompt() {
-				var prompt = printToStdout(hostname + ":" + activeDirectory + " $<span contenteditable onblur='this.focus();'></span>");
+				var prompt = printToStdout(hostname + ":" + currentDirectory + " $<span contenteditable onblur='this.focus();'></span>");
 				var span = prompt.querySelector("span");
 				span.focus();
 				span.addEventListener("keyup", function(e) {
@@ -195,7 +195,7 @@
 						commands[args[0]](args);
 					}
 					else {
-						printToStdout("shell: " + args[0] + ": not found");
+						printToStdout("shell: " + args[0] + ": command not found");
 						break;
 					}
 				}
