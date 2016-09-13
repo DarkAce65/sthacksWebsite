@@ -160,7 +160,25 @@
 			var hostname = "something@sthacks";
 			var info_location = document.querySelector("#info_location").innerHTML;
 
-			var commands = {};
+			var commands = {
+				"cd": function(args) {
+					if(args.length === 1) {
+						printToStdout(currentDirectory);
+					}
+					else {
+						args[1] = args[1].replace(/\/$/, "");
+						switch(args[1]) {
+							case "~":
+							case "/etc/secret":
+								currentDirectory = args[1];
+							break;
+							default:
+								printToStdout("shell: cd: " + args[1] + ": No such file or directory");
+								break;
+						}
+					}
+				}
+			};
 
 			function printToStdout(output) {
 				var stdout = document.querySelector(".stdout");
