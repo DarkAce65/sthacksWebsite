@@ -204,6 +204,19 @@
 								break;
 						}
 					}
+				},
+				"cls": function(args) {
+					document.querySelector(".stdout").innerHTML = "";
+				},
+				"./getInfo.sh": function(args) {
+					if(currentDirectory === "~") {
+						printToStdout("STATUS: "+ info_location);
+					}
+				},
+				"./secret.sh": function(args) {
+					if(currentDirectory === "/etc/secret") {
+						printToStdout("cowsays moo");
+					}
 				}
 			};
 
