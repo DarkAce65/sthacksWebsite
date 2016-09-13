@@ -171,7 +171,34 @@
 							case "~":
 							case "/etc/secret":
 								currentDirectory = args[1];
-							break;
+								break;
+							default:
+								printToStdout("shell: cd: " + args[1] + ": No such file or directory");
+								break;
+						}
+					}
+				},
+				"ls": function(args) {
+					if(args.length === 1) {
+						switch(currentDirectory) {
+							case "~":
+								printToStdout("getInfo.sh");
+								break;
+							case "/etc/secret":
+								printToStdout("secret.sh");
+								break;
+						}
+						printToStdout(currentDirectory);
+					}
+					else {
+						args[1] = args[1].replace(/\/$/, "");
+						switch(args[1]) {
+							case "~":
+								printToStdout("getInfo.sh");
+								break;
+							case "/etc/secret":
+								printToStdout("secret.sh");
+								break;
 							default:
 								printToStdout("shell: cd: " + args[1] + ": No such file or directory");
 								break;
