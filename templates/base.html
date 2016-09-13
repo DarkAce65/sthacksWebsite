@@ -180,7 +180,7 @@
 			}
 
 			function evaluateInput(input) {
-				var args = input.split(" ");
+				var args = input.match(/((?:[^\\\s'"]|\\.)+)|"([^"]*)"|'([^']*)'/g);
 				console.log(args);
 			}
 
