@@ -162,10 +162,17 @@
 
 			var commands = {};
 
-			function createPrompt() {
-				var prompt = document.createElement("p");
-				prompt.innerHTML = hostname + ":" + activeDirectory + " $<span contenteditable onblur='this.focus();'></span>";
-				document.querySelector(".stdout").appendChild(prompt);
+			function printToStdout(output) {
+				var stdout = document.querySelector(".stdout");
+				var item = document.createElement("p");
+				item.innerHTML = output;
+				stdout.appendChild(item);
+
+				return item;
+			}
+
+			function printPrompt() {
+				var prompt = printToStdout(hostname + ":" + activeDirectory + " $<span contenteditable onblur='this.focus();'></span>");
 				var span = prompt.querySelector("span");
 				span.focus();
 				span.addEventListener("keyup", function(e) {
@@ -173,15 +180,26 @@
 					if(code === 13) {
 						e.preventDefault();
 						this.removeAttribute("contenteditable");
-						var input = this.innerHTML.replace(/<.*?>/g, "");
+						var input = this.innerHTML.replace(/<br>/g, "");
+						input = input.replace(/&nbsp;/g, " ");
 						evaluateInput(input);
 					}
 				});
 			}
 
 			function evaluateInput(input) {
-				var args = input.match(/((?:[^\\\s'"]|\\.)+)|"([^"]*)"|'([^']*)'/g);
-				console.log(args);
+				var inputCommands = input.split(/\s*;\s*/);
+				for(var i = 0; i < inputCommands.length; i++) {
+					var args = inputCommands[i].match(/((?:[^\\\s'"]|\\.)+)|"([^"]*)"|'([^']*)'/g);
+					if(commands.hasOwnProperty(args[0])) {
+						commands[args[0]](args);
+					}
+					else {
+						printToStdout("shell: " + args[0] + ": not found");
+						break;
+					}
+				}
+				printPrompt();
 			}
 
 			function closet() {
@@ -211,7 +229,7 @@
 				}
 			}
 
-			createPrompt();
+			printPrompt();
 		</script>
 	</body>
 </html>
